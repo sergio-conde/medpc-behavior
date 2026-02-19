@@ -1,3 +1,5 @@
+![ visitors](https://visitcount.itsfinethat.com/api?id=sergio-conde/medpc-behavior&color=1&icon=0&pretty=true)
+
 # medpc-behavior
 
 **Behavioral analysis tools for MedPC files**  
