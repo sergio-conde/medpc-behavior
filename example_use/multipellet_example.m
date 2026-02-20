@@ -45,21 +45,14 @@ cfg.events.sess_end   = 100;  % \ 100 - End of session
 cfg.trial.start_label = {'1p','4p'};
 cfg.trial.start       = {'cue1_on','cue4_on'};
 cfg.trial.end         = {'cue1_off','cue4_off'};
+
 % Create main trial structure
 % We can use that configuration to create the main trial structure. This struct 
 % organizes choronologicaly the trials and ITIs. The trials are defined by start-end 
 % pairs. The ITI are defined from the end event of the trial and the start event 
 % of the next trial (or end of the session in case of the last trial).
 % 
-% This struct contains the following fields:
-%% 
-% * type: trial type, which is defined by the strat_label field of the trial 
-% configuration. 
-% * num: trial number
-% * t_start: start time in seconds
-% * t_end: end time in seconds
-% * duration: in seconds
-% * int_label: interval label. This could be either _trial_ or _iti_
+
 %% 
 % This struct is the backbone of the analysis. The times listed in this structure 
 % will be the reference to the trial based analysis: counting behavioral events, 
