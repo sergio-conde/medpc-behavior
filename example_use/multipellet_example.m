@@ -5,9 +5,9 @@
 % analysis from the MedPC output file. 
 
 clear; clc
-% ref_file = '\\vs03\VS03-NandB-3\Ipek\projects\miniscope_rat_control\Data_analysis\Ipek_Calibratrion_Cohort_1\19\19_Cal_Shock_2_2';
-ref_file = '\\vs03\VS03-NandB-3\Sergio\projects\behavior_medpc\Data_collection\!262AF_1.SUB';
+ref_file = 'M:\GitHub\medpc-behavior\example_data\example_rat_multipellet';
 % med_data = read_medpc(ref_file);
+
 % Configuration
 % We start by defining a configuration struct. So far, this struct must have 
 % at least the following fields:
@@ -47,7 +47,7 @@ cfg.trial.start       = {'cue1_on','cue4_on'};
 cfg.trial.end         = {'cue1_off','cue4_off'};
 % Create main trial structure
 % We can use that configuration to create the main trial structure. This struct 
-% organizes choronologicaly the trials and ITI. The trials are defined by start-end 
+% organizes choronologicaly the trials and ITIs. The trials are defined by start-end 
 % pairs. The ITI are defined from the end event of the trial and the start event 
 % of the next trial (or end of the session in case of the last trial).
 % 
@@ -92,8 +92,10 @@ data_4p_tr  = pick_files(ev_struct.trials,'type','4p','int_label','trial');
 data_4p_iti = pick_files(ev_struct.trials,'type','4p','int_label','iti');
 % Plot some results
 
-box_data  = [[data_1p_tr.mag_cue1_num] [data_1p_iti.mag_cue1_num] [data_4p_tr.mag_cue4_num] [data_4p_iti.mag_cue4_num]];
-gr_id     = [ones(1,length(data_1p_tr)) 2*ones(1,length(data_1p_iti)) 3*ones(1,length(data_4p_tr)) 4*ones(1,length(data_4p_iti))];
+box_data  = [[data_1p_tr.mag_cue1_num] [data_1p_iti.mag_cue1_num] ...
+    [data_4p_tr.mag_cue4_num] [data_4p_iti.mag_cue4_num]];
+gr_id     = [ones(1,length(data_1p_tr)) 2*ones(1,length(data_1p_iti)) ...
+    3*ones(1,length(data_4p_tr)) 4*ones(1,length(data_4p_iti))];
 
 wfig(1)
 
