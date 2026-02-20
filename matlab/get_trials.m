@@ -3,6 +3,7 @@ function trial_struct = get_trials(cfg)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % trial_struct = get_trials(cfg)
+%
 % get_trials function extracts the trials contained in med_pc files 
 % following the user's configuration 
 %
@@ -13,9 +14,10 @@ function trial_struct = get_trials(cfg)
 % 
 %   events: struct with fields named after each event and contining the
 %   number used to configure each event in the MedPC
-%   start_label: 
-%   start
-%   end
+%   start_label: label of the events used to mark the start of the trial
+%   start: name of the events in the events field used to mark the start of 
+%   the trial
+%   end: name of the events used to mark the end of the trial
 % 
 % Outputs:
 %   This struct contains the following fields:
@@ -27,7 +29,7 @@ function trial_struct = get_trials(cfg)
 %   * duration: in seconds
 %   * int_label: interval label. This could be either _trial_ or _iti_% 
 %
-% Sergio Conde, Aug 2024. 
+% Sergio Conde-Ocazionez, Aug 2024. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
