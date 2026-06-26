@@ -5,7 +5,7 @@ if ~isfield(cfg,'latency')
 end
 
 if ~isfield(cfg,'first_lat')
-    cfg.latency = false;
+    cfg.first_lat = false;
 end
 
 ev_struct.cfg          = cfg;
