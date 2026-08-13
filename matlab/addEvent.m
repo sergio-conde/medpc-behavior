@@ -10,7 +10,7 @@ end
 
 eventList.cfg = cfg;
 eventList.dataCfg = trialEntry.cfg;
-eventList.medData = trialEntry.med_data;
+eventList.medData = trialEntry.medData;
 
 trials = trialEntry.trials;
 eventRequest = cfg.events;
