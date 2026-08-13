@@ -29,7 +29,9 @@ function trial_struct = get_trials(cfg)
 %   * duration: in seconds
 %   * int_label: interval label. This could be either _trial_ or _iti_% 
 %
-% Sergio Conde-Ocazionez, Aug 2024. 
+% Sergio Conde-Ocazionez, August 2024. 
+% Neuromodulation & Behavior Laboratory
+% Netherlands Institute for Neuroscience.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
