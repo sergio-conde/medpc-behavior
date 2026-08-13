@@ -1,41 +1,40 @@
-function ev_struct = addEvent(trialEntry,cfg)
+function eventList = addEvent(trialEntry,cfg)
 
 if ~isfield(cfg,'latency')
     cfg.latency = false;
 end
 
-if ~isfield(cfg,'first_lat')
-    cfg.first_lat = false;
+if ~isfield(cfg,'firstEvent')
+    cfg.firstEvent = false;
 end
 
-ev_struct.cfg          = cfg;
-ev_struct.data_cfg     = trialEntry.cfg;
-ev_struct.med_data     = trialEntry.med_data;
+eventList.cfg = cfg;
+eventList.dataCfg = trialEntry.cfg;
+eventList.medData = trialEntry.med_data;
 
-trials    = trialEntry.trials;
-eventList   = cfg.events;
+trials = trialEntry.trials;
+eventRequest = cfg.events;
 
-for ievent = 1:length(eventList)
-    eventFlags = ev_struct.med_data.E == trialEntry.cfg.events.(eventList{ievent});
-    eventTimes = ev_struct.med_data.D(eventFlags) * 10e-3;
+for ievent = 1:length(eventRequest)
+    eventFlags = eventList.medData.E == trialEntry.cfg.events.(eventRequest{ievent});
+    eventTimes = eventList.medData.D(eventFlags) * 10e-3;
     for ientry = 1:size(trials,1)
         
         entryFlags = eventTimes >= trials(ientry).startTime & ...
             eventTimes < trials(ientry).endTime;
         entryTimes = eventTimes(entryFlags);
-        first_ev  = min(entryTimes - trials(ientry).startTime);
-        if isempty(first_ev); first_ev = NaN; end
-
-        trials(ientry).([eventList{ievent} '_num']) = length(entryTimes);
+        trials(ientry).([eventRequest{ievent} 'Count']) = length(entryTimes);
 
         if cfg.latency
-            trials(ientry).([eventList{ievent} '_tstamp']) = entryTimes;
+            trials(ientry).([eventRequest{ievent} 'Time']) = entryTimes;
         end
 
-        if cfg.first_lat
-            trials(ientry).([eventList{ievent} '_lat1']) = first_ev;
+        if cfg.firstEvent
+            firstEvent  = min(entryTimes - trials(ientry).startTime);
+            if isempty(firstEvent); firstEvent = NaN; end
+            trials(ientry).([eventRequest{ievent} 'First']) = firstEvent;
         end
     end
 end
 
-ev_struct.trials = trials;
+eventList.trials = trials;

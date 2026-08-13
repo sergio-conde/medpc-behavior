@@ -36,11 +36,11 @@ function trialStruct = getTrials(cfg)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %---------------------- check the med_file input ----------------------------%
-if ischar(cfg.med_file)
-    med_data = read_medpc(cfg.med_file);
-elseif isstruct(cfg.med_file)
+if ischar(cfg.medFile)
+    med_data = read_medpc(cfg.medFile);
+elseif isstruct(cfg.medFile)
     % include here something to check if the struct has the right configuration
-    med_data = cfg.med_file;
+    med_data = cfg.medFile;
 end
 
 % include defaults for different med_pc configurations, like sample rate
