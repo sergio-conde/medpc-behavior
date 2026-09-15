@@ -1,8 +1,9 @@
 function event = extractEvent(cfg)
 
+% 
 % check whether med_data is a path, a struct (i.e, after using read_medpc
 % independently) or a vector (the event and time blocks)
-
+%
 % It assumes the sample rate is 100Hz
 
 % Medpc-Behavior project. 
@@ -36,8 +37,6 @@ for ievent = 1:length(eventLabels)
 end
 
 function checkMedData(medData)
-
-
 
 
 function errorHandle(errorID)
