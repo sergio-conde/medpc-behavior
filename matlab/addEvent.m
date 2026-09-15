@@ -1,14 +1,8 @@
 function eventList = addEvent(trialEntry,cfg)
 
-if ~isfield(cfg,'latency')
-    cfg.latency = false;
-end
+cfg = checkCfg(cfg); % check input data and requestes fields
 
-if ~isfield(cfg,'firstEvent')
-    cfg.firstEvent = false;
-end
-
-eventList.cfg = cfg;
+eventList.cfg = rmfield(cfg,'inputFields');
 eventList.dataCfg = trialEntry.cfg;
 eventList.medData = trialEntry.medData;
 
@@ -22,19 +16,35 @@ for ievent = 1:length(eventRequest)
         
         entryFlags = eventTimes >= trials(ientry).startTime & ...
             eventTimes < trials(ientry).endTime;
-        entryTimes = eventTimes(entryFlags);
-        trials(ientry).([eventRequest{ievent} 'Count']) = length(entryTimes);
+        entryTimes = eventTimes(entryFlags) - trials(ientry).startTime;
+        
+        % count events. 
+        trials(ientry).([eventRequest{ievent} 'Count']) = numel(entryTimes);
 
+        % compute event latency if requested
         if cfg.latency
-            trials(ientry).([eventRequest{ievent} 'Time']) = entryTimes;
+            trials(ientry).([eventRequest{ievent} 'Times']) = entryTimes;
         end
 
+        % extract first event if requested
         if cfg.firstEvent
-            firstEvent  = min(entryTimes - trials(ientry).startTime);
+            firstEvent  = min(entryTimes);
             if isempty(firstEvent); firstEvent = NaN; end
             trials(ientry).([eventRequest{ievent} 'First']) = firstEvent;
         end
+        
     end
 end
 
 eventList.trials = trials;
+
+function cfg = checkCfg(cfg)
+
+cfg.inputFields = {'latency','firstEvent'};
+
+for iField = 1:numel(cfg.inputFields)
+    localField = cfg.inputFields{iField};
+    if ~isfield(cfg,localField)
+        cfg.(localField) = false;
+    end
+end
