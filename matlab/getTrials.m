@@ -27,13 +27,12 @@ function trialStruct = getTrials(cfg)
 %   * t_start: start time in seconds
 %   * t_end: end time in seconds
 %   * duration: in seconds
-%   * int_label: interval label. This could be either _trial_ or _iti_% 
-%
+%   * int_label: interval label. This could be either _trial_ or _iti_ 
+
 % Sergio Conde-Ocazionez, August 2024.
 % v0.2 August 2026
 % Neuromodulation & Behavior Laboratory
 % Netherlands Institute for Neuroscience.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %---------------------- check the med_file input ----------------------------%
@@ -56,16 +55,16 @@ for iev = 1:length(eventList)
     idList = cat(2,idList,cfg.events.(eventList{iev}));
 end
 
-if ~iscell(cfg.trial.start)
-    cfg.trial.start = eventList(ismember(idList,cfg.trial.start));
+if ~iscell(cfg.trialStart)
+    cfg.trialStart = eventList(ismember(idList,cfg.trialStart));
 end
 
-if ~iscell(cfg.trial.end)
-    cfg.trial.end = cfg.trial.start;
+if ~iscell(cfg.trialEnd)
+    cfg.trialEnd = cfg.trialStart;
     noEndFlag = 1;
 else
-    if ~iscell(cfg.trial.end)
-        cfg.trial.end = eventList(ismember(idList,cfg.trial.end));
+    if ~iscell(cfg.trialEnd)
+        cfg.trialEnd = eventList(ismember(idList,cfg.trialEnd));
     end
     noEndFlag = 0;
 end
@@ -74,30 +73,30 @@ trialStruct.cfg     = cfg;
 trialStruct.medData = medData;
 
 %---------------------- start event compilation ----------------------------%
-startEvent = cfg.trial.start;
+startEvent = cfg.trialStart;
 startTimes = [];
 startIds   = [];
 for ievent = 1:length(startEvent)
-    eventId = cfg.events.(cfg.trial.start{ievent});
+    eventId = cfg.events.(cfg.trialStart{ievent});
     startTimes = cat(2,startTimes,medData.D(medData.E == eventId));
     startIds   = cat(2,startIds,ievent * ones(1,sum(medData.E == eventId)));
 end
 [~, sortSample] = sort(startTimes);
 sortStartIds = startIds(sortSample);
-sortStartLabel = cfg.trial.start(startIds);
+sortStartLabel = cfg.trialStart(startIds);
 %---------------------- start event compilation ----------------------------%
 
 %------------------------ end event compilation ----------------------------%
-endEvent    = cfg.trial.end;
+endEvent    = cfg.trialEnd;
 endTimes = [];
 endIds   = [];
 
 for ievent = 1:length(endEvent)
-    eventId  = cfg.events.(cfg.trial.end{ievent});
+    eventId  = cfg.events.(cfg.trialEnd{ievent});
     endTimes = cat(2,endTimes,medData.D(medData.E == eventId));
     endIds   = cat(2,endIds,ievent * ones(1,sum(medData.E == eventId)));
 end
-sortEndLabel = cfg.trial.end(endIds);
+sortEndLabel = cfg.trialEnd(endIds);
 %------------------------ end event compilation ----------------------------%
 
 if noEndFlag
@@ -130,18 +129,17 @@ intervalCount(intervalStart == 0) = intervalCount(find(intervalStart == 0) - 1);
 intervalInfo = [intervalCount intervalTimes duration];
 intervalCell = [trialLabels startEventLabels endEventLabels num2cell(intervalInfo)];
 
-if isfield(cfg.trial,'trialLabel')
+intervalFields = {'interval','trialStart','trialEnd','count', ...
+        'startTime','endTime','duration'};
+
+if isfield(cfg,'trialLabel')
     trialIds = cell(size(intervalTimes,1),1);
-    trialIds(intervalStart == 1) = cfg.trial.trialLabel(sortStartIds);
+    trialIds(intervalStart == 1) = cfg.trialLabel(sortStartIds);
     trialIds(intervalStart == 0) = trialIds(find(intervalStart == 0) - 1);
     intervalCell = [trialIds intervalCell];
-
-    intervalFields = {'trialLabel','interval','trialStart','trialEnd','count', ...
-        'startTime','endTime','duration'};
-else
-    intervalFields = {'interval','trialStart','trialEnd','count', ...
-        'startTime','endTime','duration'};
+    intervalFields = ['trialLabel',intervalFields];
 end
-
 trialStruct.trials = cell2struct(intervalCell,intervalFields,2);
+
+
 
