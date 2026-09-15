@@ -85,25 +85,22 @@ evConfig.events = {'mag'};
 evConfig.latency = true;
 evConfig.firstEvent = true;
 evConfig.histBin = 10;
-% sel_events  = {'mag'};
 eventList   = addEvent(trialStruct,evConfig);
-%%
+
+%% trial-based event histogram
 histCfg = [];
 histCfg.events = 'mag';
 histCfg.select.trialLabel = '4p';
 histCfg.plotFlag = true;
 [histData,eventList] = eventHistogram(eventList,histCfg);
-%%
-test = [];
-test.trialLabel = '4p';
-x = getEntry(eventList.trials,test);
+
 %%
 % Extract data of interest
 
-data1pTrial  = getEntry(eventList.trials,'trialLabel','1p','interval','trial');
+data1pTrial = getEntry(eventList.trials,'trialLabel','1p','interval','trial');
 data1pIti = getEntry(eventList.trials,'trialLabel','1p','interval','iti');
 
-data4pTrial  = getEntry(eventList.trials,'trialLabel','4p','interval','trial');
+data4pTrial = getEntry(eventList.trials,'trialLabel','4p','interval','trial');
 data4pIti = getEntry(eventList.trials,'trialLabel','4p','interval','iti');
 
 % Plot some results
