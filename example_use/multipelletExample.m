@@ -43,9 +43,9 @@ cfg.events.sessEnd   = 100;  % \ 100 - End of session
 % * _*trial*_: which has felds defining the key events. These include events 
 % that mark the start and the end of the trial
 
-cfg.trial.trialLabel = {'1p','4p'};
-cfg.trial.start      = {'cue1On','cue4On'};
-cfg.trial.end        = {'cue1Off','cue4Off'};
+cfg.trialLabel = {'1p','4p'};
+cfg.trialStart = {'cue1On','cue4On'};
+cfg.trialEnd   = {'cue1Off','cue4Off'};
 
 % Create main trial structure
 % We can use that configuration to create the main trial structure. This struct 
@@ -59,16 +59,17 @@ cfg.trial.end        = {'cue1Off','cue4Off'};
 % will be the reference to the trial based analysis: counting behavioral events, 
 % latencies, etc.
 
-trial_struct = getTrials(cfg);
+trialStruct = getTrials(cfg);
 % Add selected variables (from the cfg.events)
 % After having the main trial struct, you can add behavioral variables (events) 
 % to that structure by listing the field names defined in the event configuration 
 % and corresponding to the variables of your interest. In this example, we are 
 % adding the 'mag' variable, which indicates a maganize entry. 
 
+evConfig = [];
 evConfig.events  = {'magCue1','magCue4','mag'};
 % sel_events  = {'mag'};
-eventList   = addEvent(trial_struct,evConfig);
+eventList   = addEvent(trialStruct,evConfig);
 % Extract data of interest
 
 clear eventSel
@@ -78,6 +79,24 @@ entry.contrast.count  = 'range';
 entry.interval        = 'trial';
 [eventSel,requestConfig] = getEntry(eventList.trials,entry);
 
+%% Add some basic behavioral processing
+evConfig = [];
+evConfig.events = {'mag'};
+evConfig.latency = true;
+evConfig.firstEvent = true;
+evConfig.histBin = 10;
+% sel_events  = {'mag'};
+eventList   = addEvent(trialStruct,evConfig);
+%%
+histCfg = [];
+histCfg.events = 'mag';
+histCfg.select.trialLabel = '4p';
+histCfg.plotFlag = true;
+[histData,eventList] = eventHistogram(eventList,histCfg);
+%%
+test = [];
+test.trialLabel = '4p';
+x = getEntry(eventList.trials,test);
 %%
 % Extract data of interest
 
@@ -92,7 +111,7 @@ data4pIti = getEntry(eventList.trials,'trialLabel','4p','interval','iti');
 boxData  = [[data1pTrial.magCue1Count] [data1pIti.magCue1Count] ...
     [data4pTrial.magCue4Count] [data4pIti.magCue4Count]];
 groupId     = [ones(1,length(data1pTrial)) 2*ones(1,length(data1pIti)) ...
-    3*ones(1,length(data_4p_tr)) 4*ones(1,length(data4pIti))];
+    3*ones(1,length(data4pTrial)) 4*ones(1,length(data4pIti))];
 
 wfig(1)
 
