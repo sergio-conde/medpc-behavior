@@ -84,8 +84,7 @@ evConfig = [];
 evConfig.events = {'mag'};
 evConfig.latency = true;
 evConfig.firstEvent = true;
-evConfig.histBin = 10;
-eventList   = addEvent(trialStruct,evConfig);
+eventList = addEvent(trialStruct,evConfig);
 
 %% trial-based event histogram
 histCfg = [];
