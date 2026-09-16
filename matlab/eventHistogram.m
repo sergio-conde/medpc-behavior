@@ -10,8 +10,10 @@ end
 maxDuration = max([eventList.trials.duration]);
 if isscalar(cfg.histBins)
     histData.binEdges = linspace(0,maxDuration,cfg.histBins);
+else
+    histData.binEdges = cfg.histBins;
 end
-binCenters = histData.binEdges(1:end-1) + diff(histData.binEdges);
+binCenters = histData.binEdges(1:end-1) + diff(histData.binEdges)/2;
 
 % compute event trial-based histograms
 for iEvent = 1:numel(cfg.events)
@@ -31,9 +33,9 @@ for iEvent = 1:numel(cfg.events)
         plotHist.xdata = binCenters;
         plotHist.ydata = cat(1,histData.(histField){:});
         if isfield(cfg,'figNumber')
-            wfig(cfg.figNumber)
+            wfig(cfg.figNumber);
         else
-            wfig
+            wfig;
         end
         avg_err_shade(plotHist)
         box off
