@@ -35,6 +35,8 @@ function trialStruct = getTrials(cfg)
 % Netherlands Institute for Neuroscience.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+MEDSAMPLERATE = 10e-3;
+
 %---------------------- check the med_file input ----------------------------%
 if ischar(cfg.medFile)
     medData = read_medpc(cfg.medFile);
@@ -59,7 +61,7 @@ if ~iscell(cfg.trialStart)
     cfg.trialStart = eventList(ismember(idList,cfg.trialStart));
 end
 
-if ~iscell(cfg.trialEnd)
+if ~isfield(cfg,'trialEnd')
     cfg.trialEnd = cfg.trialStart;
     noEndFlag = 1;
 else
@@ -68,6 +70,16 @@ else
     end
     noEndFlag = 0;
 end
+
+if ~isfield(cfg,'medTime')
+    cfg.medTime = 'D';
+end
+medTime = medData.(cfg.medTime);
+
+if ~isfield(cfg,'medEvents')
+    cfg.medEvents = 'E';
+end
+medEvents = medData.(cfg.medEvents);
 
 trialStruct.cfg     = cfg;
 trialStruct.medData = medData;
@@ -78,8 +90,8 @@ startTimes = [];
 startIds   = [];
 for ievent = 1:length(startEvent)
     eventId = cfg.events.(cfg.trialStart{ievent});
-    startTimes = cat(2,startTimes,medData.D(medData.E == eventId));
-    startIds   = cat(2,startIds,ievent * ones(1,sum(medData.E == eventId)));
+    startTimes = cat(2,startTimes,medTime(medEvents == eventId));
+    startIds   = cat(2,startIds,ievent * ones(1,sum(medEvents == eventId)));
 end
 [~, sortSample] = sort(startTimes);
 sortStartIds = startIds(sortSample);
@@ -93,21 +105,21 @@ endIds   = [];
 
 for ievent = 1:length(endEvent)
     eventId  = cfg.events.(cfg.trialEnd{ievent});
-    endTimes = cat(2,endTimes,medData.D(medData.E == eventId));
-    endIds   = cat(2,endIds,ievent * ones(1,sum(medData.E == eventId)));
+    endTimes = cat(2,endTimes,medTime(medEvents == eventId));
+    endIds   = cat(2,endIds,ievent * ones(1,sum(medEvents == eventId)));
 end
 sortEndLabel = cfg.trialEnd(endIds);
 %------------------------ end event compilation ----------------------------%
 
 if noEndFlag
-    intervalTimes = [startTimes endTimes(2:end)] * 10e-3;
-else
-    intervalTimes = [startTimes endTimes] * 10e-3;
+    endTime = medTime(medEvents == cfg.events.sessionEnd);
+    endTimes = [endTimes(2:end) endTime] - 1;
 end
+intervalTimes = [startTimes endTimes] * MEDSAMPLERATE;
 
-[sortTimes, sortIds]  = sort(intervalTimes);
-sortLabels            = [sortStartLabel sortEndLabel];
-sortLabels            = sortLabels(sortIds)';
+[sortTimes, sortIds] = sort(intervalTimes);
+sortLabels = [sortStartLabel sortEndLabel];
+sortLabels = sortLabels(sortIds)';
 
 startEventLabels = sortLabels(1:end - 1);
 endEventLabels = sortLabels(2:end);
@@ -140,6 +152,8 @@ if isfield(cfg,'trialLabel')
     intervalFields = ['trialLabel',intervalFields];
 end
 trialStruct.trials = cell2struct(intervalCell,intervalFields,2);
-
+if noEndFlag
+    trialStruct.trials = getEntry(trialStruct.trials,'interval','trial');
+end
 
 
