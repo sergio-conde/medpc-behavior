@@ -1,10 +1,10 @@
 function medBehavior = medEvents(cfg)
 
 cfg = checkCfg(cfg);
-
+cfg.data = readMedpc(cfg.file);
 medBehavior.cfg = cfg;
 medBehavior.sequence = cfg.data.(cfg.medEvents);
-medBehavior.timeAxis = cfg.data.(cfg.medTime) * 1e-2; % medpc resolution is 10ms
+medBehavior.eventTimes = cfg.data.(cfg.medTime) * 1e-2; % medpc resolution is 10ms
 
 eventLabels = fieldnames(cfg.events);
 for ievent = 1:numel(eventLabels)
@@ -12,17 +12,17 @@ for ievent = 1:numel(eventLabels)
     eventFlags = medBehavior.sequence == medBehavior.cfg.events.(localEvent);
 
     if any(eventFlags)
-        eventTimes = medBehavior.timeAxis(eventFlags);
+        eventTimes = medBehavior.eventTimes(eventFlags);
         medBehavior.trigger.(localEvent) = find(eventFlags);
-        medBehavior.trigTime.(localEvent) = eventTimes;
+        medBehavior.timeStamps.(localEvent) = eventTimes;
 
         if ismember(localEvent,cfg.boutEvents.boutLabels)  
             boutList = extractBouts(eventTimes, ...
                 cfg.boutEvents.(localEvent).interBout, ...
                 cfg.boutEvents.(localEvent).minBoutDur);
-            medBehavior.time.(localEvent).start  = boutList.boutStart;
-            medBehavior.time.(localEvent).duration = boutList.duration;
-            medBehavior.time.(localEvent).triggCount = boutList.triggCount;
+            medBehavior.bout.(localEvent).start = boutList.boutStart;
+            medBehavior.bout.(localEvent).duration = boutList.duration;
+            medBehavior.bout.(localEvent).triggCount = boutList.triggCount;
         end
     else
         medBehavior = addDefaults(medBehavior,localEvent);
@@ -30,19 +30,14 @@ for ievent = 1:numel(eventLabels)
 end
 medBehavior.fileType = 'medpc';
 
-
 function medBehavior = addDefaults(medBehavior,localEvent)
 medBehavior.trigger.(localEvent) = [];
-medBehavior.trigTime.(localEvent) = [];
-medBehavior.time.(localEvent).start = [];
-medBehavior.time.(localEvent).duration = [];
-medBehavior.time.(localEvent).triggCount = [];
-
+medBehavior.timeStamps.(localEvent) = [];
+medBehavior.bout.(localEvent).start = [];
+medBehavior.bout.(localEvent).duration = [];
+medBehavior.bout.(localEvent).triggCount = [];
 
 function cfg = checkCfg(cfg)
-if ischar(cfg.data)
-    cfg.data = readMedpc(cfg.data);
-end
 
 if ~isfield(cfg,'medTime')
     cfg.medTime = 'D';
