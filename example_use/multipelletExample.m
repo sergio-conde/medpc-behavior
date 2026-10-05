@@ -5,15 +5,16 @@
 % analysis from the MedPC output file. 
 
 clear; clc
-% ref_file = 'M:\GitHub\medpc-behavior\example_data\example_rat_multipellet';
-refFile = 'M:\GitHub\medpc-behavior\example_data\example_rat_multipellet';
+repoRoot = fileparts(fileparts(mfilename('fullpath')));
+addpath(fullfile(repoRoot, 'matlab'));
+refFile = fullfile(repoRoot, 'example_data', 'example_rat_multipellet');
 % medData = readMedpc(refFile);
 
 % Configuration
 % We start by defining a configuration struct. So far, this struct must have 
 % at least the following fields:
 % % 
-% * _*med_file*_: full path of the file to be analyzed [char]
+% * _*medFile*_: full path of the file to be analyzed [char]
 
 cfg          = [];
 cfg.medFile  = refFile;
