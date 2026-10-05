@@ -45,7 +45,11 @@ The MedPC event codes are task-specific and defined by the user in `cfg.events`
 - `multipelletExample.m` must run from a fresh clone with no edits.
 
 ## Known issues / in progress
-- `getTrials.m` calls `read_medpc` (old name); the function is now `readMedpc`.
-- Several headers still use old snake_case names (`read_medpc`, `med_file`, `get_trials`).
-- `multipelletExample.m` hard-codes `M:\GitHub\...`; switch to a path relative to the script.
-- README mentions a `python/` folder that does not exist yet.
+- `getEntry`, `wfig` and `avg_err_shade` are called (`getTrials`, `eventHistogram`,
+  `multipelletExample.m`) but not defined in this repo. They are expected from
+  `matlab-utilities`, which is not yet listed under Dependencies with a version.
+- `getTrials` without `cfg.trialEnd` uses `cfg.events.sessionEnd`; the example
+  defines `cfg.events.sessEnd`.
+- `eventHistogram` `checkCfg` falls back to `cfg.og.events` (commented out) and
+  sets `cfg.event` instead of `cfg.events` when `cfg.events` is missing.
+- `addEvent`, `eventHistogram`, `extractBouts` and `medEvents` have no help header.

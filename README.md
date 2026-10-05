@@ -21,7 +21,7 @@ For researchers analyzing **operant conditioning**, **Pavlovian tasks**, **reinf
 ## Repository structure
 
 matlab/   	% MATLAB functions to read and parse MedPC files
-python/   	% Python functions/modules to work with MedPC data
 example_use/ 	% Example MATLAB scripts using the functions in matlab/
 example_data/ 	% Some MedPC files used in the examples in example_use/
 
+Python versions planned.
