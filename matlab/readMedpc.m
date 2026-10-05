@@ -1,30 +1,30 @@
 function medpcData = readMedpc(filePath)
 
-% medpc_data = read_medpc(file_path)
+% medpcData = readMedpc(filePath)
 %
-% read_medpc function extracts the information contained in medPC output
+% readMedpc extracts the information contained in medPC output
 % files. It looks for every output-block (defined by capital letters 
 % e.g., A:, E:, T:, etc.) and store the data in separate fields of the 
 % output structure.   
 %
 % Inputs:
-%   file_path: full path including medPC file name                          [char]
+%   filePath: full path including medPC file name                           [char]
 %
 % Outputs:
-%   medpd_data: struct containing the following fields                      [char]
+%   medpcData: struct containing the following fields                       [struct]
 %       header: with all the information before the first block output.     [char]
 %       file: File name in header                                           [char]
-%       start_date: Start Date in header                                    [char]
-%       end_date: End Date in header                                        [char]
+%       startDate: Start Date in header                                     [char]
+%       endDate: End Date in header                                         [char]
 %       subject: Subject in header                                          [char]
 %       experiment: Experiment in header                                    [char]
 %       group: Group in header                                              [char]
 %       box: Box in header                                                  [char]
-%       start_time: Start Time in header                                    [char]
-%       end_time: End Time in header                                        [char]
+%       startTime: Start Time in header                                     [char]
+%       endTime: End Time in header                                         [char]
 %       msn: MSN in header                                                  [char]
-%       dur_min: session duration in minutes                                [double]
-%       (block_name): multiple fields named after each block (e.g., E, T,   [double]
+%       minutesDuration: session duration in minutes                        [double]
+%       (blockName): multiple fields named after each block (e.g., E, T,    [double]
 %                     etc.), and containig the data in vectors.
 %
 % Sergio Conde, Jun 2024. NIN. Willuhn's Lab.

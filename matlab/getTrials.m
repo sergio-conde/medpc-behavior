@@ -2,32 +2,38 @@
 function trialStruct = getTrials(cfg)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% trial_struct = getTrials(cfg)
+% trialStruct = getTrials(cfg)
 %
-% get_trials function extracts the trials contained in med_pc files 
+% getTrials extracts the trials contained in MedPC files 
 % following the user's configuration 
 %
 % Inputs:
 % cfg: configuration struct containing the following fields                 [struct]
-%   med_file: MedPC output file. It can be a string with the full path
-%   of the file, or the output of the read_medpc function.
+%   medFile: MedPC output file. It can be a string with the full path
+%   of the file, or the output of the readMedpc function.
 % 
 %   events: struct with fields named after each event and contining the
 %   number used to configure each event in the MedPC
-%   start_label: label of the events used to mark the start of the trial
-%   start: name of the events in the events field used to mark the start of 
-%   the trial
-%   end: name of the events used to mark the end of the trial
+%   trialStart: name(s) of the events in the events field used to mark the
+%   start of the trial
+%   trialEnd: name(s) of the events used to mark the end of the trial
+%   (optional, default: next trialStart; then events.sessionEnd is required)
+%   trialLabel: label of each trialStart event (optional)
+%   medTime: block with event times (optional, default: 'D')
+%   medEvents: block with event codes (optional, default: 'E')
 % 
 % Outputs:
-%   This struct contains the following fields:
-%   * type: trial type, which is defined by the strat_label field of the trial 
-%     configuration. 
-%   * num: trial number
-%   * t_start: start time in seconds
-%   * t_end: end time in seconds
+%   trialStruct: struct with fields cfg, medData and trials. trials contains
+%   the following fields:
+%   * trialLabel: trial type, which is defined by the trialLabel field of the
+%     trial configuration (only if cfg.trialLabel is given).
+%   * interval: interval label. This could be either _trial_ or _iti_ 
+%   * trialStart: label of the event that starts the interval
+%   * trialEnd: label of the event that ends the interval
+%   * count: trial number
+%   * startTime: start time in seconds
+%   * endTime: end time in seconds
 %   * duration: in seconds
-%   * int_label: interval label. This could be either _trial_ or _iti_ 
 
 % Sergio Conde-Ocazionez, August 2024.
 % v0.2 August 2026
@@ -37,9 +43,9 @@ function trialStruct = getTrials(cfg)
 
 MEDSAMPLERATE = 10e-3;
 
-%---------------------- check the med_file input ----------------------------%
+%---------------------- check the medFile input ----------------------------%
 if ischar(cfg.medFile)
-    medData = read_medpc(cfg.medFile);
+    medData = readMedpc(cfg.medFile);
 elseif isstruct(cfg.medFile)
     % include here something to check if the struct has the right configuration
     medData = cfg.medFile;
