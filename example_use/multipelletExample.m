@@ -5,17 +5,18 @@
 % analysis from the MedPC output file. 
 
 clear; clc
-repoRoot = fileparts(fileparts(mfilename('fullpath')));
-addpath(fullfile(repoRoot, 'matlab'));
+% repoRoot = fileparts(fileparts(mfilename('fullpath')));
+% addpath(fullfile(repoRoot, 'matlab'));
+% 
+% % medpc-behavior uses getEntry, wfig and avg_err_shade from matlab-utilities
+% % https://github.com/Willuhn-Group/matlab-utilities
+% if ~exist('getEntry', 'file') || ~exist('wfig', 'file') || ~exist('avg_err_shade', 'file')
+%     error('multipelletExample:missingDependency', ...
+%         ['matlab-utilities is not on the MATLAB path.\n' ...
+%          'Clone https://github.com/Willuhn-Group/matlab-utilities and run addpath(genpath(<its folder>)).']);
+% end
 
-% medpc-behavior uses getEntry, wfig and avg_err_shade from matlab-utilities
-% https://github.com/Willuhn-Group/matlab-utilities
-if ~exist('getEntry', 'file') || ~exist('wfig', 'file') || ~exist('avg_err_shade', 'file')
-    error('multipelletExample:missingDependency', ...
-        ['matlab-utilities is not on the MATLAB path.\n' ...
-         'Clone https://github.com/Willuhn-Group/matlab-utilities and run addpath(genpath(<its folder>)).']);
-end
-
+repoRoot = 'M:\GitHub\medpc-behavior';
 refFile = fullfile(repoRoot, 'example_data', 'example_rat_multipellet');
 % medData = readMedpc(refFile);
 
@@ -70,66 +71,68 @@ cfg.trialEnd   = {'cue1Off','cue4Off'};
 % latencies, etc.
 
 trialStruct = getTrials(cfg);
-% Add selected variables (from the cfg.events)
+
+%% Add selected variables (from the cfg.events)
 % After having the main trial struct, you can add behavioral variables (events) 
 % to that structure by listing the field names defined in the event configuration 
 % and corresponding to the variables of your interest. In this example, we are 
 % adding the 'mag' variable, which indicates a maganize entry. 
 
-evConfig = [];
-evConfig.events  = {'magCue1','magCue4','mag'};
-% sel_events  = {'mag'};
-eventList   = addEvent(trialStruct,evConfig);
-% Extract data of interest
-
-clear eventSel
-entry                 = [];
-entry.count           = [7 12];
-entry.contrast.count  = 'range';
-entry.interval        = 'trial';
-[eventSel,requestConfig] = getEntry(eventList.trials,entry);
-
-%% Add some basic behavioral processing
-evConfig = [];
+evConfig        = []; 
 evConfig.events = {'mag'};
-evConfig.latency = true;
-evConfig.firstEvent = true;
-eventList = addEvent(trialStruct,evConfig);
+eventCount = addEvent(trialStruct,evConfig);
+
+%% Add selected variables (from the cfg.events) and include additional behavioral measures
+
+evConfig            = [];
+evConfig.events     = {'mag'};
+evConfig.latency    = true; % default = 'false'
+evConfig.firstEvent = true; % default = 'false'
+eventBeh = addEvent(trialStruct,evConfig);
+
+%% Extract data of interest
+
+entry                 = [];
+entry.count           = [5 15];
+entry.contrast.count  = 'range';
+entry.interval        = 'iti';
+[eventSel,requestConfig] = getEntry(eventBeh.trials,entry);
 
 %% trial-based event histogram
+
 histCfg = [];
 histCfg.events = 'mag';
-histCfg.select.trialLabel = '4p';
 histCfg.plotFlag = true;
-[histData,eventList] = eventHistogram(eventList,histCfg);
+histCfg.figNumber = 1;
+histCfg.histBins = 0:35;
 
-%%
-% Extract data of interest
+histCfg.select.trialLabel = '4p';
+histCfg.color = 'k';
+[histData4p,list4p] = eventHistogram(eventBeh,histCfg);
 
-data1pTrial = getEntry(eventList.trials,'trialLabel','1p','interval','trial');
-data1pIti = getEntry(eventList.trials,'trialLabel','1p','interval','iti');
+%% add a second histogram
+histCfg.select.trialLabel = '1p';
+histCfg.color = 'r';
+[histData1p,list1p] = eventHistogram(eventBeh,histCfg);
 
-data4pTrial = getEntry(eventList.trials,'trialLabel','4p','interval','trial');
-data4pIti = getEntry(eventList.trials,'trialLabel','4p','interval','iti');
+%% Extract bouts from time stamps vector
+iIti = 6;
+minInterval = 1;
+minDuration = 1;
 
-% Plot some results
+trialTimes = eventSel(iIti).magTimes;
+boutList = extractBouts(trialTimes,minInterval,minDuration);
+disp(boutList)
 
-boxData  = [[data1pTrial.magCue1Count] [data1pIti.magCue1Count] ...
-    [data4pTrial.magCue4Count] [data4pIti.magCue4Count]];
-groupId     = [ones(1,length(data1pTrial)) 2*ones(1,length(data1pIti)) ...
-    3*ones(1,length(data4pTrial)) 4*ones(1,length(data4pIti))];
+%% Add bouts to event struct
 
-wfig(1)
+evConfig = [];
+evConfig.events = {'mag'};
+boutCfg.minDuration = 1;
+boutCfg.minInterval = 1;
+evConfig.bouts = boutCfg;   
+evConfig.latency = true;
+evConfig.firstEvent = true;
 
-subplot 121
-boxplot(boxData,groupId)
-box off; ylabel '# mag (1p / 4p) entries'
-xticklabels({'cue1p','iti1p','cue4p','iti4p'})
-
-boxData  = [[data1pTrial.magCount] [data1pIti.magCount] ...
-    [data4pTrial.magCount] [data4pIti.magCount]];
-subplot 122
-boxplot(boxData,groupId)
-box off; ylabel '# mag (any) entries'
-xticklabels({'cue1p','iti1p','cue4p','iti4p'})
+eventBout = addEvent(trialStruct,evConfig);
 
