@@ -18,6 +18,27 @@ For researchers analyzing **operant conditioning**, **Pavlovian tasks**, **reinf
 
 *(Note: This project is under active development and the API may change.)*
 
+## Requirements
+
+| Dependency | Version | Link |
+|---|---|---|
+| MATLAB | R2020a+ | https://www.mathworks.com |
+| matlab-utilities | `main` (untagged) | https://github.com/Willuhn-Group/matlab-utilities |
+
+`matlab-utilities` provides `getEntry`, `wfig` and `avg_err_shade`, which
+`getTrials`, `eventHistogram` and the example script call.
+
+## Installation
+
+1. Clone this repository and [matlab-utilities](https://github.com/Willuhn-Group/matlab-utilities).
+2. Add both to the MATLAB path:
+   ```matlab
+   addpath(genpath('<path to>/medpc-behavior/matlab'));
+   addpath(genpath('<path to>/matlab-utilities'));
+   ```
+3. Run `example_use/multipelletExample.m` to check the setup. It stops with a
+   clear message if matlab-utilities is missing.
+
 ## Repository structure
 
 matlab/   	% MATLAB functions to read and parse MedPC files
