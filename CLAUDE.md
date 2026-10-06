@@ -48,8 +48,6 @@ The MedPC event codes are task-specific and defined by the user in `cfg.events`
 - `getEntry`, `wfig` and `avg_err_shade` are called (`getTrials`, `eventHistogram`,
   `multipelletExample.m`) but not defined in this repo. They are expected from
   `matlab-utilities`, which is not yet listed under Dependencies with a version.
-- `getTrials` without `cfg.trialEnd` uses `cfg.events.sessionEnd`; the example
-  defines `cfg.events.sessEnd`.
 - `eventHistogram` `checkCfg` falls back to `cfg.og.events` (commented out) and
   sets `cfg.event` instead of `cfg.events` when `cfg.events` is missing.
 - `addEvent`, `eventHistogram`, `extractBouts` and `medEvents` have no help header.

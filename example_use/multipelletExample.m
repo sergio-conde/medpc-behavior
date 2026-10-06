@@ -7,6 +7,15 @@
 clear; clc
 repoRoot = fileparts(fileparts(mfilename('fullpath')));
 addpath(fullfile(repoRoot, 'matlab'));
+
+% medpc-behavior uses getEntry, wfig and avg_err_shade from matlab-utilities
+% https://github.com/Willuhn-Group/matlab-utilities
+if ~exist('getEntry', 'file') || ~exist('wfig', 'file') || ~exist('avg_err_shade', 'file')
+    error('multipelletExample:missingDependency', ...
+        ['matlab-utilities is not on the MATLAB path.\n' ...
+         'Clone https://github.com/Willuhn-Group/matlab-utilities and run addpath(genpath(<its folder>)).']);
+end
+
 refFile = fullfile(repoRoot, 'example_data', 'example_rat_multipellet');
 % medData = readMedpc(refFile);
 
@@ -38,7 +47,7 @@ cfg.events.magCue1   = 10;   % \ 10 - Mag during 1p Cue
 cfg.events.magCue4   = 11;   % \ 11 - Mag during 4p Cue
 cfg.events.subs4p    = 12;   % \ 12 - 4p subsequent pellets
 cfg.events.mag       = 16;   % \ 16 - Mag entry any time
-cfg.events.sessEnd   = 100;  % \ 100 - End of session
+cfg.events.sessionEnd = 100;  % \ 100 - End of session
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % 
 % * _*trial*_: which has felds defining the key events. These include events 
