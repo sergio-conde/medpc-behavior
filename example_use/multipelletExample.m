@@ -5,18 +5,23 @@
 % analysis from the MedPC output file. 
 
 clear; clc
-% repoRoot = fileparts(fileparts(mfilename('fullpath')));
-% addpath(fullfile(repoRoot, 'matlab'));
-% 
-% % medpc-behavior uses getEntry, wfig and avg_err_shade from matlab-utilities
-% % https://github.com/Willuhn-Group/matlab-utilities
-% if ~exist('getEntry', 'file') || ~exist('wfig', 'file') || ~exist('avg_err_shade', 'file')
-%     error('multipelletExample:missingDependency', ...
-%         ['matlab-utilities is not on the MATLAB path.\n' ...
-%          'Clone https://github.com/Willuhn-Group/matlab-utilities and run addpath(genpath(<its folder>)).']);
-% end
+% Find the repo from this script's location. When run section by section,
+% mfilename points to a temporary copy, so use the file open in the Editor.
+scriptFile = mfilename('fullpath');
+if ~isfile([scriptFile '.m'])
+    scriptFile = matlab.desktop.editor.getActiveFilename;
+end
+repoRoot = fileparts(fileparts(scriptFile));
+addpath(fullfile(repoRoot, 'matlab'));
 
-repoRoot = 'M:\GitHub\medpc-behavior';
+% medpc-behavior uses getEntry, wfig and avg_err_shade from matlab-utilities
+% https://github.com/Willuhn-Group/matlab-utilities
+if ~exist('getEntry', 'file') || ~exist('wfig', 'file') || ~exist('avg_err_shade', 'file')
+    error('multipelletExample:missingDependency', ...
+        ['matlab-utilities is not on the MATLAB path.\n' ...
+         'Clone https://github.com/Willuhn-Group/matlab-utilities and run addpath(genpath(<its folder>)).']);
+end
+
 refFile = fullfile(repoRoot, 'example_data', 'example_rat_multipellet');
 % medData = readMedpc(refFile);
 
